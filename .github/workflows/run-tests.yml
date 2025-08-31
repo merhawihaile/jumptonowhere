@@ -1,31 +1,38 @@
-# A name for your workflow
-name: Run Custom Setup Script
+name: CI
 
-# Trigger on a push to the main branch
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-# Define the job
 jobs:
-  # The job's ID
   build:
-    # Use an Ubuntu runner
     runs-on: ubuntu-latest
-
-    # Define the steps
     steps:
-      # Step 1: ALWAYS check out your code first. 
-      # The runner starts empty and needs your files.
-      - name: Checkout repository code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: editor/package-lock.json
+      - run: npm ci --prefix editor
+      - run: npm test --prefix editor
+      - run: npm run build --prefix editor
+      - uses: actions/upload-pages-artifact@v2
+        with:
+          path: editor/dist
 
-      # Step 2: Give your script permission to run.
-      # Replace 'setup.sh' with your script's actual name.
-      - name: Make script executable
-        run: chmod +x ./start-project.js
-
-      # Step 3: Run your script.
-      # The workflow is now just executing your file.
-      - name: Execute setup script
-        run: ./start-project.js
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v2
