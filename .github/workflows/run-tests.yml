@@ -1,0 +1,39 @@
+# A descriptive name for your workflow, shown in the GitHub Actions tab.
+name: Run NodeJS Tests
+
+# The 'Event' section: This workflow runs on a push or pull_request
+# to the 'main' branch.
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# The 'Jobs' section: Contains one or more jobs to run.
+jobs:
+  # The name of our single job. You can name it anything.
+  build-and-test:
+    # The 'Runner': Specifies the virtual machine to use. 
+    # 'ubuntu-latest' is a common and reliable choice.
+    runs-on: ubuntu-latest
+
+    # The 'Steps' section: The sequence of tasks for this job.
+    steps:
+      # Step 1: Check out your repository's code so the runner can access it.
+      # 'actions/checkout@v4' is a pre-built action made by GitHub.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up the correct version of Node.js.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 3: Install the project's dependencies using a shell command.
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run the tests using another shell command.
+      - name: Run tests
+        run: npm test
