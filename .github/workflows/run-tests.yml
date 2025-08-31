@@ -1,47 +1,31 @@
-# A descriptive name for your workflow, shown in the GitHub Actions tab.
-name: Run NodeJS Tests
+# A name for your workflow
+name: Run Custom Setup Script
 
-# The 'Event' section: This workflow runs on a push or pull_request
-# to the 'main' branch.
+# Trigger on a push to the main branch
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
-# The 'Jobs' section: Contains one or more jobs to run.
+# Define the job
 jobs:
-  # The name of our single job. You can name it anything.
-  build-and-test:
-    # The 'Runner': Specifies the virtual machine to use. 
-    # 'ubuntu-latest' is a common and reliable choice.
+  # The job's ID
+  build:
+    # Use an Ubuntu runner
     runs-on: ubuntu-latest
 
-    # The 'Steps' section: The sequence of tasks for this job.
+    # Define the steps
     steps:
-      # Step 1: Check out your repository's code so the runner can access it.
-      # 'actions/checkout@v4' is a pre-built action made by GitHub.
-      - name: Checkout code
+      # Step 1: ALWAYS check out your code first. 
+      # The runner starts empty and needs your files.
+      - name: Checkout repository code
         uses: actions/checkout@v4
 
-      # Step 2: Set up the correct version of Node.js.
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      # Step 2: Give your script permission to run.
+      # Replace 'setup.sh' with your script's actual name.
+      - name: Make script executable
+        run: chmod +x ./setup.sh
 
-      # Step 3: Install the project's dependencies
-      - name: Install dependencies
-        # Add this line to change the directory for this step
-       
-        run: npm install
-
-      # Step 4: Run the tests
-      - name: Run tests
-        # Add this line here as well
-       
-        run: npm test
-
-      # Step 4: Run the tests using another shell command.
-      - name: Run tests
-        run: npm test
+      # Step 3: Run your script.
+      # The workflow is now just executing your file.
+      - name: Execute setup script
+        run: ./setup.sh
