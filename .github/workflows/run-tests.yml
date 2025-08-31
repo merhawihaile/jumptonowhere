@@ -30,9 +30,17 @@ jobs:
         with:
           node-version: '20'
 
-      # Step 3: Install the project's dependencies using a shell command.
+      # Step 3: Install the project's dependencies
       - name: Install dependencies
+        # Add this line to change the directory for this step
+        working-directory: ./jumptonowhere
         run: npm install
+
+      # Step 4: Run the tests
+      - name: Run tests
+        # Add this line here as well
+        working-directory: ./jumptonowhere
+        run: npm test
 
       # Step 4: Run the tests using another shell command.
       - name: Run tests
