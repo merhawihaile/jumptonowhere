@@ -23,9 +23,9 @@ jobs:
       # Step 2: Give your script permission to run.
       # Replace 'setup.sh' with your script's actual name.
       - name: Make script executable
-        run: chmod +x ./setup.sh
+        run: chmod +x ./start-project.js
 
       # Step 3: Run your script.
       # The workflow is now just executing your file.
       - name: Execute setup script
-        run: ./setup.sh
+        run: ./start-project.js
